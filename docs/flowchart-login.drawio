@@ -1,0 +1,199 @@
+<mxfile host="app.diagrams.net" modified="2026-01-12T14:00:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram name="Proses Login" id="login-flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="FLOWCHART PROSES LOGIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="250" y="20" width="300" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Start -->
+        <mxCell id="start" value="Mulai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="350" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Input Email Password -->
+        <mxCell id="input" value="User memasukkan&#xa;Email dan Password" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="310" y="160" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="start" target="input">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Validate Input -->
+        <mxCell id="validate" value="Validasi input&#xa;(email &amp; password tidak kosong?)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="310" y="250" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="input" target="validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Error Empty -->
+        <mxCell id="error1" value="Tampilkan pesan:&#xa;&quot;Email dan password wajib diisi&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="260" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_no1" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="validate" target="error1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_back1" value="" style="endArrow=classic;html=1;curved=1;" edge="1" parent="1" source="error1" target="input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Find User -->
+        <mxCell id="find_user" value="Cari user berdasarkan email&#xa;di database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="360" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="validate" target="find_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- User Found? -->
+        <mxCell id="user_found" value="User ditemukan?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="find_user" target="user_found">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Error Not Found -->
+        <mxCell id="error2" value="Tampilkan pesan:&#xa;&quot;Email atau password salah&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="445" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_no2" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="user_found" target="error2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_back2" value="" style="endArrow=classic;html=1;curved=1;" edge="1" parent="1" source="error2" target="input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Check Active -->
+        <mxCell id="check_active" value="Status user aktif?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="user_found" target="check_active">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Error Inactive -->
+        <mxCell id="error3" value="Tampilkan pesan:&#xa;&quot;Akun telah dinonaktifkan&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="545" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_no3" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_active" target="error3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_back3" value="" style="endArrow=classic;html=1;curved=1;" edge="1" parent="1" source="error3" target="input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Verify Password -->
+        <mxCell id="verify_pass" value="Verifikasi password&#xa;dengan bcrypt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="640" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_active" target="verify_pass">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Password Valid? -->
+        <mxCell id="pass_valid" value="Password valid?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="720" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="verify_pass" target="pass_valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Error Password -->
+        <mxCell id="error4" value="Tampilkan pesan:&#xa;&quot;Email atau password salah&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="725" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_no4" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="pass_valid" target="error4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_back4" value="" style="endArrow=classic;html=1;curved=1;" edge="1" parent="1" source="error4" target="input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Create Session -->
+        <mxCell id="create_session" value="Buat session login &amp;&#xa;simpan token JWT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="820" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="pass_valid" target="create_session">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Log Activity -->
+        <mxCell id="log_activity" value="Catat aktivitas login&#xa;ke log_aktivitas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="890" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="create_session" target="log_activity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Check Role -->
+        <mxCell id="check_role" value="Cek role user" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="970" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="log_activity" target="check_role">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Redirect Admin -->
+        <mxCell id="redirect_admin" value="Redirect ke&#xa;/admin/dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1070" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_admin" value="Admin" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_role" target="redirect_admin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Redirect Petugas -->
+        <mxCell id="redirect_petugas" value="Redirect ke&#xa;/petugas/dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="335" y="1070" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_petugas" value="Petugas" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_role" target="redirect_petugas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Redirect Peminjam -->
+        <mxCell id="redirect_peminjam" value="Redirect ke&#xa;/peminjam/dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="530" y="1070" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_peminjam" value="Peminjam" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_role" target="redirect_peminjam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- End -->
+        <mxCell id="end" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1150" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_end1" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="redirect_admin" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_end2" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="redirect_petugas" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_end3" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="redirect_peminjam" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

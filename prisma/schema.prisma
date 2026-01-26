@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  admin
+  petugas
+  peminjam
+}
+
+enum UserStatus {
+  aktif
+  nonaktif
+}
+
+enum AlatStatus {
+  tersedia
+  habis
+  maintenance
+}
+
+enum PeminjamanStatus {
+  menunggu
+  disetujui
+  dipinjam
+  ditolak
+  dikembalikan
+  terlambat
+}
+
+enum KondisiAlat {
+  baik
+  rusak
+  hilang
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+/// Tabel Users - Menyimpan data semua pengguna
+model User {
+  id        Int        @id @default(autoincrement())
+  nama      String     @db.VarChar(100)
+  email     String     @unique @db.VarChar(100)
+  password  String     @db.VarChar(255)
+  role      Role       @default(peminjam)
+  noTelepon String?    @map("no_telepon") @db.VarChar(20)
+  alamat    String?    @db.Text
+  image     String?    @db.VarChar(255)
+  status    UserStatus @default(aktif)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  peminjaman           Peminjaman[]   @relation("UserPeminjaman")
+  validatedPeminjaman  Peminjaman[]   @relation("ValidatorPeminjaman")
+  pengembalian         Pengembalian[] @relation("ProcessorPengembalian")
+  logAktivitas         LogAktivitas[]
+
+  @@map("users")
+}
+
+/// Tabel Kategori - Kategori alat
+model Kategori {
+  id        Int      @id @default(autoincrement())
+  nama      String   @unique @db.VarChar(50)
+  deskripsi String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  alat Alat[]
+
+  @@map("kategori")
+}
+
+/// Tabel Alat - Data alat yang dapat dipinjam
+model Alat {
+  id            Int        @id @default(autoincrement())
+  kode          String     @unique @db.VarChar(20)
+  nama          String     @db.VarChar(100)
+  kategoriId    Int?       @map("kategori_id")
+  deskripsi     String?    @db.Text
+  gambar        String?    @db.VarChar(255)
+  stokTotal     Int        @default(1) @map("stok_total")
+  stokTersedia  Int        @default(1) @map("stok_tersedia")
+  stokPerbaikan Int        @default(0) @map("stok_perbaikan")
+  kondisi       String     @default("Baik") @db.VarChar(50)
+  status        AlatStatus @default(tersedia)
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  kategori   Kategori?    @relation(fields: [kategoriId], references: [id], onDelete: SetNull)
+  peminjaman Peminjaman[]
+
+  @@index([kategoriId])
+  @@index([status])
+  @@map("alat")
+}
+
+/// Tabel Peminjaman - Transaksi peminjaman
+model Peminjaman {
+  id                    Int              @id @default(autoincrement())
+  kode                  String           @unique @db.VarChar(20)
+  userId                Int              @map("user_id")
+  alatId                Int              @map("alat_id")
+  jumlah                Int              @default(1)
+  tanggalPinjam         DateTime         @map("tanggal_pinjam") @db.Date
+  tanggalKembaliRencana DateTime         @map("tanggal_kembali_rencana") @db.Date
+  keperluan             String           @db.Text
+  status                PeminjamanStatus @default(menunggu)
+  validatedBy           Int?             @map("validated_by")
+  validatedAt           DateTime?        @map("validated_at")
+  catatanValidasi       String?          @map("catatan_validasi") @db.Text
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  user         User          @relation("UserPeminjaman", fields: [userId], references: [id], onDelete: Cascade)
+  alat         Alat          @relation(fields: [alatId], references: [id], onDelete: Cascade)
+  validator    User?         @relation("ValidatorPeminjaman", fields: [validatedBy], references: [id], onDelete: SetNull)
+  pengembalian Pengembalian?
+
+  @@index([userId])
+  @@index([alatId])
+  @@index([status])
+  @@index([tanggalPinjam, tanggalKembaliRencana])
+  @@map("peminjaman")
+}
+
+/// Tabel Pengembalian - Data pengembalian alat
+model Pengembalian {
+  id                   Int        @id @default(autoincrement())
+  peminjamanId         Int        @unique @map("peminjaman_id")
+  tanggalKembaliAktual DateTime   @map("tanggal_kembali_aktual") @db.Date
+  hariTerlambat        Int        @default(0) @map("hari_terlambat")
+  dendaPerHari         Decimal    @default(5000) @map("denda_per_hari") @db.Decimal(10, 2)
+  totalDenda           Decimal    @default(0) @map("total_denda") @db.Decimal(10, 2)
+  kondisiAlat          KondisiAlat @map("kondisi_alat")
+  jumlahBaik           Int        @default(0) @map("jumlah_baik")
+  jumlahRusak          Int        @default(0) @map("jumlah_rusak")
+  jumlahHilang         Int        @default(0) @map("jumlah_hilang")
+  catatan              String?    @db.Text
+  processedBy          Int        @map("processed_by")
+  createdAt            DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  peminjaman Peminjaman @relation(fields: [peminjamanId], references: [id], onDelete: Cascade)
+  processor  User       @relation("ProcessorPengembalian", fields: [processedBy], references: [id], onDelete: Cascade)
+
+  @@map("pengembalian")
+}
+
+/// Tabel Log Aktivitas - Audit trail
+model LogAktivitas {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  aksi      String   @db.VarChar(50)
+  tabel     String?  @db.VarChar(50)
+  recordId  Int?     @map("record_id")
+  deskripsi String?  @db.Text
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([aksi])
+  @@index([createdAt])
+  @@map("log_aktivitas")
+}

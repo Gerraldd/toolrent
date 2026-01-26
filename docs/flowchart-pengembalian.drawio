@@ -1,0 +1,184 @@
+<mxfile host="app.diagrams.net" modified="2026-01-12T15:00:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram name="Proses Pengembalian dan Denda" id="pengembalian-flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="FLOWCHART PROSES PENGEMBALIAN ALAT&#xa;DAN PERHITUNGAN DENDA" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="400" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Start -->
+        <mxCell id="start" value="Mulai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="350" y="90" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Login Check -->
+        <mxCell id="login_check" value="Peminjam sudah login?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="170" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="start" target="login_check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Redirect Login -->
+        <mxCell id="redirect" value="Redirect ke login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="180" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_redir" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="login_check" target="redirect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Open Page -->
+        <mxCell id="open_page" value="Buka halaman&#xa;&quot;Peminjaman Saya&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="270" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="login_check" target="open_page">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Select Loan -->
+        <mxCell id="select" value="Pilih peminjaman yang&#xa;ingin dikembalikan" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="350" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="open_page" target="select">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Check Status -->
+        <mxCell id="check_status" value="Status = &quot;dipinjam&quot;?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="select" target="check_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Error Status -->
+        <mxCell id="error_status" value="Tampilkan pesan:&#xa;&quot;Tidak dapat dikembalikan&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="530" y="445" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_err" value="Tidak" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_status" target="error_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Click Return -->
+        <mxCell id="click_return" value="Klik tombol&#xa;&quot;Kembalikan Alat&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" value="Ya" style="endArrow=classic;html=1;" edge="1" parent="1" source="check_status" target="click_return">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Get Actual Date -->
+        <mxCell id="get_date" value="Sistem mengambil&#xa;tanggal hari ini sebagai&#xa;tanggal_kembali_aktual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="300" y="620" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="click_return" target="get_date">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Compare Dates -->
+        <mxCell id="compare" value="tanggal_aktual &gt;&#xa;tanggal_rencana?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="310" y="710" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="get_date" target="compare">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- On Time -->
+        <mxCell id="on_time" value="hari_terlambat = 0&#xa;total_denda = Rp 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="820" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_ontime" value="Tidak&#xa;(Tepat waktu)" style="endArrow=classic;html=1;" edge="1" parent="1" source="compare" target="on_time">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Calculate Late -->
+        <mxCell id="calc_late" value="Hitung keterlambatan:&#xa;hari_terlambat =&#xa;tgl_aktual - tgl_rencana" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="520" y="810" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_late" value="Ya&#xa;(Terlambat)" style="endArrow=classic;html=1;" edge="1" parent="1" source="compare" target="calc_late">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Calculate Fine -->
+        <mxCell id="calc_fine" value="Hitung denda:&#xa;total_denda =&#xa;hari_terlambat × Rp 5.000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="520" y="900" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_calc" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="calc_late" target="calc_fine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Input Condition -->
+        <mxCell id="input_cond" value="Pilih kondisi alat:&#xa;- Baik&#xa;- Rusak Ringan&#xa;- Rusak Berat&#xa;- Hilang" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="290" y="1000" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_join1" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="on_time" target="input_cond">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_join2" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="calc_fine" target="input_cond">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Input Notes -->
+        <mxCell id="input_notes" value="Input catatan&#xa;pengembalian (opsional)" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1110" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="input_cond" target="input_notes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Save Pengembalian -->
+        <mxCell id="save_return" value="Simpan ke tabel pengembalian:&#xa;- peminjaman_id&#xa;- tanggal_kembali_aktual&#xa;- hari_terlambat&#xa;- total_denda&#xa;- kondisi_alat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1190" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="input_notes" target="save_return">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Update Peminjaman -->
+        <mxCell id="update_peminjaman" value="Update status peminjaman:&#xa;status = &quot;dikembalikan&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1320" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="save_return" target="update_peminjaman">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Update Stok -->
+        <mxCell id="update_stok" value="Update stok alat:&#xa;stok_tersedia += jumlah" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1400" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="update_peminjaman" target="update_stok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Log Activity -->
+        <mxCell id="log" value="Catat ke log_aktivitas:&#xa;&quot;Pengembalian alat&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1480" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="update_stok" target="log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Show Result -->
+        <mxCell id="result" value="Tampilkan hasil:&#xa;- Status: Berhasil Dikembalikan&#xa;- Keterlambatan: X hari&#xa;- Total Denda: Rp XXX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1560" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow13" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="log" target="result">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- End -->
+        <mxCell id="end" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1660" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_end" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="result" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
