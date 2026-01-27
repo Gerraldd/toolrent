@@ -48,6 +48,7 @@ export interface CreateUserInput {
     noTelepon?: string
     alamat?: string
     status?: 'aktif' | 'nonaktif'
+    image?: string
 }
 
 export interface UpdateUserInput {
@@ -58,6 +59,7 @@ export interface UpdateUserInput {
     noTelepon?: string
     alamat?: string
     status?: 'aktif' | 'nonaktif'
+    image?: string
 }
 
 export interface UsersParams {

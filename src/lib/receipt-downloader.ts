@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-export const downloadReceiptPDF = async (htmlContent: string, fileName: string) => {
+export const downloadReceiptPDF = async (htmlContent: string, fileName: string, returnBlobUrl: boolean = false): Promise<string | void> => {
     // Use an iframe for complete CSS isolation from the main page
     // This prevents html2canvas from encountering unsupported CSS color functions like lab()
     const iframe = document.createElement('iframe');
@@ -79,7 +79,12 @@ export const downloadReceiptPDF = async (htmlContent: string, fileName: string) 
             }
         }
 
-        pdf.save(fileName);
+        if (returnBlobUrl) {
+            const blob = pdf.output('blob');
+            return URL.createObjectURL(blob);
+        } else {
+            pdf.save(fileName);
+        }
 
     } catch (error) {
         console.error('Error generating PDF:', error);

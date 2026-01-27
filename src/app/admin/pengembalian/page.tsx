@@ -111,6 +111,11 @@ export default function PengembalianPage() {
     const [loadingAllIds, setLoadingAllIds] = useState(false)
     const [allIds, setAllIds] = useState<number[]>([])
 
+    // Print Preview State
+    const [printPreviewUrl, setPrintPreviewUrl] = useState<string | null>(null)
+    const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false)
+    const [previewFileName, setPreviewFileName] = useState('')
+
     const [addForm, setAddForm] = useState<CreatePengembalianInput>({
         peminjamanId: 0,
         jumlahBaik: 0,
@@ -492,7 +497,7 @@ export default function PengembalianPage() {
     }
 
     // Print Return Receipt
-    const handlePrintReturnReceipt = (item: Pengembalian) => {
+    const handlePrintReturnReceipt = async (item: Pengembalian) => {
         // Direct download
         const isLate = item.hariTerlambat > 0
         const htmlContent = `
@@ -702,7 +707,13 @@ export default function PengembalianPage() {
             </html>
         `
 
-        downloadReceiptPDF(htmlContent, `Bukti_Pengembalian_${item.peminjaman.kode}.pdf`)
+        const fileName = `Bukti_Pengembalian_${item.peminjaman.kode}.pdf`
+        const url = await downloadReceiptPDF(htmlContent, fileName, true)
+        if (url && typeof url === 'string') {
+            setPrintPreviewUrl(url)
+            setPreviewFileName(fileName)
+            setIsPrintPreviewOpen(true)
+        }
     }
 
     // Late days input component
@@ -710,11 +721,11 @@ export default function PengembalianPage() {
         return (
             <Input
                 readOnly
-                value={days > 0 ? `${days} ${t('returns.days')}` : `0 ${t('returns.days')}`}
-                className={`cursor-not-allowed font-medium ${days > 0
+                value={days > 0 ? `${days} ${t('returns.days')} ` : `0 ${t('returns.days')} `}
+                className={`cursor - not - allowed font - medium ${days > 0
                     ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-300 dark:border-red-700'
                     : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'
-                    }`}
+                    } `}
             />
         )
     }
@@ -862,10 +873,10 @@ export default function PengembalianPage() {
                                             <div className="flex items-center justify-between">
                                                 <Label>{t('returns.form.conditionLabel')} <span className="text-red-500">*</span></Label>
                                                 {selectedPeminjaman && (
-                                                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${(addForm.jumlahBaik || 0) + (addForm.jumlahRusak || 0) + (addForm.jumlahHilang || 0) === selectedPeminjaman.jumlah
+                                                    <span className={`text - xs font - medium px - 2 py - 0.5 rounded ${(addForm.jumlahBaik || 0) + (addForm.jumlahRusak || 0) + (addForm.jumlahHilang || 0) === selectedPeminjaman.jumlah
                                                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
                                                         : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                                                        }`}>
+                                                        } `}>
                                                         {(addForm.jumlahBaik || 0) + (addForm.jumlahRusak || 0) + (addForm.jumlahHilang || 0)} / {selectedPeminjaman.jumlah} unit
                                                     </span>
                                                 )}
@@ -1062,12 +1073,12 @@ export default function PengembalianPage() {
                                         <th className="px-6 py-4 w-12">
                                             <div className="flex items-center justify-center">
                                                 <label className="cursor-pointer">
-                                                    <div className={`flex items-center justify-center w-5 h-5 rounded border transition-all ${isAllPageSelected
+                                                    <div className={`flex items - center justify - center w - 5 h - 5 rounded border transition - all ${isAllPageSelected
                                                         ? 'bg-primary border-primary text-white'
                                                         : isIndeterminate
                                                             ? 'bg-primary/50 border-primary/50 text-white'
                                                             : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-950 hover:border-primary/50'
-                                                        }`}>
+                                                        } `}>
                                                         {(isAllPageSelected || isIndeterminate) && <CheckSquare className="w-3.5 h-3.5" />}
                                                     </div>
                                                     <input
@@ -1093,15 +1104,15 @@ export default function PengembalianPage() {
                                     {data.map((item, index) => (
                                         <tr
                                             key={item.id}
-                                            className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group ${selectedIds.includes(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''}`}
+                                            className={`hover: bg - slate - 50 dark: hover: bg - slate - 700 / 50 transition - colors group ${selectedIds.includes(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''} `}
                                         >
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center justify-center">
                                                     <label className="cursor-pointer">
-                                                        <div className={`flex items-center justify-center w-5 h-5 rounded border transition-all ${selectedIds.includes(item.id)
+                                                        <div className={`flex items - center justify - center w - 5 h - 5 rounded border transition - all ${selectedIds.includes(item.id)
                                                             ? 'bg-primary border-primary text-white'
                                                             : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-950 hover:border-primary/50'
-                                                            }`}>
+                                                            } `}>
                                                             {selectedIds.includes(item.id) && <CheckSquare className="w-3.5 h-3.5" />}
                                                         </div>
                                                         <input
@@ -1392,10 +1403,10 @@ export default function PengembalianPage() {
                                 <div className="flex items-center justify-between">
                                     <Label>{t('returns.form.conditionLabel')} <span className="text-red-500">*</span></Label>
                                     {editingItem && (
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded ${(editForm.jumlahBaik || 0) + (editForm.jumlahRusak || 0) + (editForm.jumlahHilang || 0) === (editingItem.peminjaman.jumlah || 1)
+                                        <span className={`text - xs font - medium px - 2 py - 0.5 rounded ${(editForm.jumlahBaik || 0) + (editForm.jumlahRusak || 0) + (editForm.jumlahHilang || 0) === (editingItem.peminjaman.jumlah || 1)
                                             ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
                                             : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                                            }`}>
+                                            } `}>
                                             {(editForm.jumlahBaik || 0) + (editForm.jumlahRusak || 0) + (editForm.jumlahHilang || 0)} / {editingItem.peminjaman.jumlah || 1} unit
                                         </span>
                                     )}
@@ -1547,15 +1558,15 @@ export default function PengembalianPage() {
                                 {exportColumns.map((col) => (
                                     <label
                                         key={col.key}
-                                        className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedColumns.includes(col.key)
+                                        className={`flex items - center gap - 3 p - 3 rounded - lg border - 2 cursor - pointer transition - all ${selectedColumns.includes(col.key)
                                             ? 'border-primary bg-primary/5 dark:border-primary/50 dark:bg-primary/10'
                                             : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900/50'
-                                            }`}
+                                            } `}
                                     >
-                                        <div className={`flex items-center justify-center w-5 h-5 rounded border ${selectedColumns.includes(col.key)
+                                        <div className={`flex items - center justify - center w - 5 h - 5 rounded border ${selectedColumns.includes(col.key)
                                             ? 'bg-primary border-primary text-white'
                                             : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-950'
-                                            }`}>
+                                            } `}>
                                             {selectedColumns.includes(col.key) && <CheckCircle2 className="w-3.5 h-3.5" />}
                                         </div>
                                         <input
@@ -1564,10 +1575,10 @@ export default function PengembalianPage() {
                                             onChange={() => toggleColumn(col.key)}
                                             className="hidden"
                                         />
-                                        <span className={`text-sm font-medium ${selectedColumns.includes(col.key)
+                                        <span className={`text - sm font - medium ${selectedColumns.includes(col.key)
                                             ? 'text-primary dark:text-slate-100'
                                             : 'text-slate-700 dark:text-slate-300'
-                                            }`}>
+                                            } `}>
                                             {col.label}
                                         </span>
                                     </label>
@@ -1583,10 +1594,10 @@ export default function PengembalianPage() {
                             <button
                                 onClick={handleExportCSV}
                                 disabled={selectedColumns.length === 0}
-                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all group cursor-pointer ${selectedColumns.length === 0
+                                className={`flex flex - col items - center justify - center p - 4 rounded - 2xl border - 2 transition - all group cursor - pointer ${selectedColumns.length === 0
                                     ? 'border-slate-200 dark:border-slate-800 opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-900'
                                     : 'border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 bg-white dark:bg-slate-900'
-                                    }`}
+                                    } `}
                             >
                                 <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-2 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-colors">
                                     <FileText className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -1597,10 +1608,10 @@ export default function PengembalianPage() {
                             <button
                                 onClick={handleExportExcel}
                                 disabled={selectedColumns.length === 0}
-                                className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all group cursor-pointer ${selectedColumns.length === 0
+                                className={`flex flex - col items - center justify - center p - 4 rounded - 2xl border - 2 transition - all group cursor - pointer ${selectedColumns.length === 0
                                     ? 'border-slate-200 dark:border-slate-800 opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-900'
                                     : 'border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 bg-white dark:bg-slate-900'
-                                    }`}
+                                    } `}
                             >
                                 <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-500/10 mb-2 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/20 transition-colors">
                                     <FileSpreadsheet className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -1641,6 +1652,46 @@ export default function PengembalianPage() {
                         >
                             {bulkDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             {t('common.delete')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            {/* Print Preview Dialog */}
+            <Dialog open={isPrintPreviewOpen} onOpenChange={(open) => {
+                setIsPrintPreviewOpen(open)
+                if (!open && printPreviewUrl) {
+                    URL.revokeObjectURL(printPreviewUrl)
+                    setPrintPreviewUrl(null)
+                }
+            }}>
+                <DialogContent className="max-w-4xl h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>{t('common.printPreview') || 'Pratinjau Cetak'}</DialogTitle>
+                        <DialogDescription>{t('common.printPreviewDesc') || 'Pratinjau dokumen sebelum dicetak'}</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 w-full h-full min-h-[500px] bg-slate-100 dark:bg-slate-900 rounded-md overflow-hidden">
+                        {printPreviewUrl && (
+                            <iframe
+                                src={printPreviewUrl}
+                                className="w-full h-full border-0"
+                                title="Print Preview"
+                            />
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsPrintPreviewOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => {
+                            if (printPreviewUrl) {
+                                const link = document.createElement('a');
+                                link.href = printPreviewUrl;
+                                link.download = previewFileName || 'document.pdf';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        }}>
+                            <Printer className="mr-2 h-4 w-4" />
+                            {t('common.print')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

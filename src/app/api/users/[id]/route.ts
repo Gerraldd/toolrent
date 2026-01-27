@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
 
         const body = await request.json()
-        const { nama, email, password, role, noTelepon, alamat, status } = body
+        const { nama, email, password, role, noTelepon, alamat, status, image } = body
 
         // Check if user exists
         const existingUser = await prisma.user.findUnique({
@@ -137,6 +137,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         if (noTelepon !== undefined) updateData.noTelepon = noTelepon
         if (alamat !== undefined) updateData.alamat = alamat
         if (status) updateData.status = status
+        if (image !== undefined) updateData.image = image
 
         // Hash password if provided
         if (password) {

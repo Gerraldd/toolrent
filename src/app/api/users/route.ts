@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json()
-        const { nama, email, password, role, noTelepon, alamat, status } = body
+        const { nama, email, password, role, noTelepon, alamat, status, image } = body
 
         // Validation
         if (!nama || !email || !password) {
@@ -155,6 +155,7 @@ export async function POST(request: NextRequest) {
                 noTelepon,
                 alamat,
                 status: status || 'aktif',
+                image,
             },
             select: {
                 id: true,

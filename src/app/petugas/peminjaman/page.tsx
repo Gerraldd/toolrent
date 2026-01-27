@@ -61,6 +61,11 @@ export default function PetugasPeminjamanPage() {
     const [rejectingItem, setRejectingItem] = useState<Peminjaman | null>(null)
     const [rejectReason, setRejectReason] = useState('')
 
+    // Print Preview State
+    const [printPreviewUrl, setPrintPreviewUrl] = useState<string | null>(null)
+    const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false)
+    const [previewFileName, setPreviewFileName] = useState('')
+
     // Debounced search
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -70,7 +75,7 @@ export default function PetugasPeminjamanPage() {
     }, [searchValue, setSearchQuery])
 
     // Status badge styles
-    const getStatusBadge = (status: string) => {
+    const getStatusBadge = (status: string, tanggalKembaliRencana?: string) => {
         const config: Record<string, { bg: string; text: string; label: string }> = {
             menunggu: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-700 dark:text-yellow-300', label: t('adminLoans.status.waiting') },
             disetujui: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300', label: t('adminLoans.status.approved') },
@@ -80,10 +85,40 @@ export default function PetugasPeminjamanPage() {
             terlambat: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-300', label: t('adminLoans.status.late') },
         }
         const style = config[status] || { bg: 'bg-gray-100', text: 'text-gray-700', label: status }
+
+        // Calculate remaining days or overdue for 'dipinjam' status
+        let daysInfo = null
+        if (status === 'dipinjam' && tanggalKembaliRencana) {
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+            const returnDate = new Date(tanggalKembaliRencana)
+            returnDate.setHours(0, 0, 0, 0)
+            const diffTime = returnDate.getTime() - today.getTime()
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+            if (diffDays > 0) {
+                daysInfo = { text: `${diffDays} hari lagi`, isOverdue: false }
+            } else if (diffDays === 0) {
+                daysInfo = { text: 'Hari ini', isOverdue: false }
+            } else {
+                daysInfo = { text: `Terlambat ${Math.abs(diffDays)} hari`, isOverdue: true }
+            }
+        }
+
         return (
-            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${style.bg} ${style.text} border border-current/20`}>
-                {style.label}
-            </span>
+            <div className="flex flex-col items-start gap-1">
+                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${style.bg} ${style.text} border border-current/20`}>
+                    {style.label}
+                </span>
+                {daysInfo && (
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${daysInfo.isOverdue
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+                        : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                        }`}>
+                        {daysInfo.text}
+                    </span>
+                )}
+            </div>
         )
     }
 
@@ -117,7 +152,7 @@ export default function PetugasPeminjamanPage() {
     }
 
     // Print loan proof handler for 'dipinjam' status
-    const handlePrintLoanProof = (item: Peminjaman) => {
+    const handlePrintLoanProof = async (item: Peminjaman) => {
         // Direct download
 
         const htmlContent = `
@@ -297,7 +332,13 @@ export default function PetugasPeminjamanPage() {
             </html>
         `
 
-        downloadReceiptPDF(htmlContent, `Bukti_Peminjaman_${item.kode}.pdf`)
+        const fileName = `Bukti_Peminjaman_${item.kode}.pdf`
+        const url = await downloadReceiptPDF(htmlContent, fileName, true)
+        if (url && typeof url === 'string') {
+            setPrintPreviewUrl(url)
+            setPreviewFileName(fileName)
+            setIsPrintPreviewOpen(true)
+        }
     }
 
     // Pagination buttons
@@ -334,9 +375,10 @@ export default function PetugasPeminjamanPage() {
                     key={i}
                     variant="outline"
                     size="sm"
-                    className={`h-9 w-9 p-0 rounded-lg ${i === page
+                    className={`h - 9 w - 9 p - 0 rounded - lg ${i === page
                         ? 'border-primary bg-primary/10 dark:bg-primary/40 text-primary dark:text-blue-200 font-bold'
-                        : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'}`}
+                        : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'
+                        } `}
                     onClick={() => setCurrentPage(i)}
                 >
                     {i}
@@ -449,7 +491,7 @@ export default function PetugasPeminjamanPage() {
                                     {data.map((item, index) => (
                                         <tr
                                             key={item.id}
-                                            className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group ${index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''}`}
+                                            className={`hover: bg - slate - 50 dark: hover: bg - slate - 700 / 50 transition - colors group ${index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''} `}
                                         >
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="font-mono text-sm font-semibold text-primary dark:text-blue-200">{item.kode}</span>
@@ -478,7 +520,7 @@ export default function PetugasPeminjamanPage() {
                                                 {formatDate(item.tanggalKembaliRencana)}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {getStatusBadge(item.status)}
+                                                {getStatusBadge(item.status, item.tanggalKembaliRencana)}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                                 <div className="flex justify-center gap-1">
@@ -691,6 +733,46 @@ export default function PetugasPeminjamanPage() {
                         <Button onClick={handleReject} disabled={updating} variant="destructive">
                             {updating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             {t('adminLoans.reject')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            {/* Print Preview Dialog */}
+            <Dialog open={isPrintPreviewOpen} onOpenChange={(open) => {
+                setIsPrintPreviewOpen(open)
+                if (!open && printPreviewUrl) {
+                    URL.revokeObjectURL(printPreviewUrl)
+                    setPrintPreviewUrl(null)
+                }
+            }}>
+                <DialogContent className="max-w-4xl h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>{t('common.printPreview') || 'Pratinjau Cetak'}</DialogTitle>
+                        <DialogDescription>{t('common.printPreviewDesc') || 'Pratinjau dokumen sebelum dicetak'}</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 w-full h-full min-h-[500px] bg-slate-100 dark:bg-slate-900 rounded-md overflow-hidden">
+                        {printPreviewUrl && (
+                            <iframe
+                                src={printPreviewUrl}
+                                className="w-full h-full border-0"
+                                title="Print Preview"
+                            />
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsPrintPreviewOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => {
+                            if (printPreviewUrl) {
+                                const link = document.createElement('a');
+                                link.href = printPreviewUrl;
+                                link.download = previewFileName || 'document.pdf';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        }}>
+                            <Printer className="mr-2 h-4 w-4" />
+                            {t('common.print')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

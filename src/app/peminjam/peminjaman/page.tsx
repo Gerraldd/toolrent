@@ -77,6 +77,11 @@ export default function PeminjamanSayaPage() {
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
 
+    // Print Preview State
+    const [printPreviewUrl, setPrintPreviewUrl] = useState<string | null>(null)
+    const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false)
+    const [previewFileName, setPreviewFileName] = useState('')
+
     // API Hooks
     const { data: peminjamanData, pagination, loading, error, fetchMyLoans } = useMyLoans()
     const { data: alatList, fetchAlat } = useAlatList()
@@ -197,7 +202,7 @@ export default function PeminjamanSayaPage() {
     const estimatedFine = lateDays * 5000
 
     // Print proof handler for approved loans
-    const handlePrintProof = (item: Peminjaman) => {
+    const handlePrintProof = async (item: Peminjaman) => {
         // Direct download
 
         const htmlContent = `
@@ -366,7 +371,13 @@ export default function PeminjamanSayaPage() {
             </html>
         `
 
-        downloadReceiptPDF(htmlContent, `Bukti_Pengajuan_${item.kode}.pdf`)
+        const fileName = `Bukti_Pengajuan_${item.kode}.pdf`
+        const url = await downloadReceiptPDF(htmlContent, fileName, true)
+        if (url && typeof url === 'string') {
+            setPrintPreviewUrl(url)
+            setPreviewFileName(fileName)
+            setIsPrintPreviewOpen(true)
+        }
     }
 
     // Pagination buttons
@@ -388,7 +399,7 @@ export default function PeminjamanSayaPage() {
 
         for (let i = startPage; i <= endPage; i++) {
             buttons.push(
-                <Button key={i} variant="outline" size="sm" className={`h-9 w-9 p-0 rounded-lg ${i === page ? 'border-primary bg-primary/5 dark:bg-primary/40 text-primary dark:text-blue-200 font-bold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'}`} onClick={() => setCurrentPage(i)}>{i}</Button>
+                <Button key={i} variant="outline" size="sm" className={`h - 9 w - 9 p - 0 rounded - lg ${i === page ? 'border-primary bg-primary/5 dark:bg-primary/40 text-primary dark:text-blue-200 font-bold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'} `} onClick={() => setCurrentPage(i)}>{i}</Button>
             )
         }
 
@@ -771,10 +782,10 @@ export default function PeminjamanSayaPage() {
                                     <div className="flex items-center justify-between">
                                         <Label>{t('returns.form.conditionLabel')}</Label>
                                         {returningItem && (
-                                            <span className={`text-xs font-medium px-2 py-0.5 rounded ${returnForm.jumlahBaik + returnForm.jumlahRusak + returnForm.jumlahHilang === returningItem.jumlah
+                                            <span className={`text - xs font - medium px - 2 py - 0.5 rounded ${returnForm.jumlahBaik + returnForm.jumlahRusak + returnForm.jumlahHilang === returningItem.jumlah
                                                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
                                                 : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                                                }`}>
+                                                } `}>
                                                 {returnForm.jumlahBaik + returnForm.jumlahRusak + returnForm.jumlahHilang} / {returningItem.jumlah} unit
                                             </span>
                                         )}
@@ -845,6 +856,47 @@ export default function PeminjamanSayaPage() {
                     </form>
                 </DialogContent>
             </Dialog>
-        </div >
+
+            {/* Print Preview Dialog */}
+            <Dialog open={isPrintPreviewOpen} onOpenChange={(open) => {
+                setIsPrintPreviewOpen(open)
+                if (!open && printPreviewUrl) {
+                    URL.revokeObjectURL(printPreviewUrl)
+                    setPrintPreviewUrl(null)
+                }
+            }}>
+                <DialogContent className="max-w-4xl h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>{t('common.printPreview')}</DialogTitle>
+                        <DialogDescription>{t('common.printPreviewDesc')}</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 w-full h-full min-h-[500px] bg-slate-100 dark:bg-slate-900 rounded-md overflow-hidden">
+                        {printPreviewUrl && (
+                            <iframe
+                                src={printPreviewUrl}
+                                className="w-full h-full border-0"
+                                title="Print Preview"
+                            />
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsPrintPreviewOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => {
+                            if (printPreviewUrl) {
+                                const link = document.createElement('a');
+                                link.href = printPreviewUrl;
+                                link.download = previewFileName || 'document.pdf';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        }}>
+                            <Printer className="mr-2 h-4 w-4" />
+                            {t('common.print')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
     )
 }

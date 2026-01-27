@@ -58,6 +58,11 @@ export default function PetugasPengembalianPage() {
     const [statusFilter, setStatusFilterState] = useState('')
     const [viewingItem, setViewingItem] = useState<Pengembalian | null>(null)
 
+    // Print Preview State
+    const [printPreviewUrl, setPrintPreviewUrl] = useState<string | null>(null)
+    const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false)
+    const [previewFileName, setPreviewFileName] = useState('')
+
     // Additional fine state
     const [fineItem, setFineItem] = useState<Pengembalian | null>(null)
     const [additionalFine, setAdditionalFine] = useState<number>(0)
@@ -174,7 +179,8 @@ export default function PetugasPengembalianPage() {
     }
 
     // Print return receipt handler
-    const handlePrintReceipt = (item: Pengembalian) => {
+    // Print return receipt handler
+    const handlePrintReceipt = async (item: Pengembalian) => {
         // Direct download
 
         const isLate = item.hariTerlambat > 0
@@ -241,8 +247,8 @@ export default function PetugasPengembalianPage() {
                     .main-info .value { font-size: 18px; font-weight: 600; }
 
                     .status-box {
-                        margin: 40px 0;
-                        padding: 16px;
+                        margin: 20px 0;
+                        padding: 12px;
                         border: 1px solid #000;
                         text-align: center;
                         font-weight: 600;
@@ -252,34 +258,49 @@ export default function PetugasPengembalianPage() {
                     }
                     
                     .fine-box {
-                        margin: 20px 0;
-                        padding: 20px;
+                        margin: 15px 0;
+                        padding: 15px;
                         background: #fef2f2;
                         border: 1px solid #dc2626;
                         color: #dc2626;
                         border-radius: 8px;
                         text-align: center;
                     }
-                    .fine-label { font-size: 12px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+                    .fine-label { font-size: 12px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
                     .fine-amount { font-size: 24px; font-weight: 800; }
 
-                    .signature-area { margin-top: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+                    .signature-area { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
                     .signature-box { text-align: center; }
-                    .signature-line { border-bottom: 1px solid #000; height: 80px; margin-bottom: 8px; }
+                    .signature-line { border-bottom: 1px solid #000; height: 60px; margin-bottom: 8px; }
                     .signature-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
 
                     .footer { 
-                        margin-top: 60px; 
-                        padding-top: 20px; 
+                        margin-top: 30px; 
+                        padding-top: 15px; 
                         border-top: 1px solid #e5e7eb; 
                         display: flex; 
                         justify-content: space-between; 
                         color: #666; 
-                        font-size: 12px; 
+                        font-size: 11px; 
                     }
                     
+                    @page {
+                        size: A4;
+                        margin: 15mm;
+                    }
+
                     @media print { 
-                        body { padding: 0; } 
+                        html, body { 
+                            height: auto;
+                            overflow: visible;
+                        }
+                        body { 
+                            padding: 0; 
+                        } 
+                        .container {
+                            width: 100%;
+                            max-width: none;
+                        }
                         .no-print { display: none; }
                     }
                 </style>
@@ -381,7 +402,13 @@ export default function PetugasPengembalianPage() {
             </html>
         `
 
-        downloadReceiptPDF(htmlContent, `Bukti_Pengembalian_${item.peminjaman.kode}.pdf`)
+        const fileName = `Bukti_Pengembalian_${item.peminjaman.kode}.pdf`
+        const url = await downloadReceiptPDF(htmlContent, fileName, true)
+        if (url && typeof url === 'string') {
+            setPrintPreviewUrl(url)
+            setPreviewFileName(fileName)
+            setIsPrintPreviewOpen(true)
+        }
     }
 
     // Pagination
@@ -408,9 +435,10 @@ export default function PetugasPengembalianPage() {
                     key={i}
                     variant="outline"
                     size="sm"
-                    className={`h-9 w-9 p-0 rounded-lg ${i === currentPage
+                    className={`h - 9 w - 9 p - 0 rounded - lg ${i === currentPage
                         ? 'border-primary bg-primary/10 dark:bg-primary/40 text-primary dark:text-blue-200 font-bold'
-                        : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'}`}
+                        : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'
+                        } `}
                     onClick={() => setPage(i)}
                 >
                     {i}
@@ -525,7 +553,7 @@ export default function PetugasPengembalianPage() {
                                     {data.map((item, index) => (
                                         <tr
                                             key={item.id}
-                                            className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group ${index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''}`}
+                                            className={`hover: bg - slate - 50 dark: hover: bg - slate - 700 / 50 transition - colors group ${index % 2 === 1 ? 'bg-slate-50/30 dark:bg-slate-800/30' : ''} `}
                                         >
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex flex-col">
@@ -841,6 +869,47 @@ export default function PetugasPengembalianPage() {
                         >
                             {savingFine && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             {t('common.save')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Print Preview Dialog */}
+            <Dialog open={isPrintPreviewOpen} onOpenChange={(open) => {
+                setIsPrintPreviewOpen(open)
+                if (!open && printPreviewUrl) {
+                    URL.revokeObjectURL(printPreviewUrl)
+                    setPrintPreviewUrl(null)
+                }
+            }}>
+                <DialogContent className="max-w-4xl h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>{t('common.printPreview') || 'Pratinjau Cetak'}</DialogTitle>
+                        <DialogDescription>{t('common.printPreviewDesc') || 'Pratinjau dokumen sebelum dicetak'}</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 w-full h-full min-h-[500px] bg-slate-100 dark:bg-slate-900 rounded-md overflow-hidden">
+                        {printPreviewUrl && (
+                            <iframe
+                                src={printPreviewUrl}
+                                className="w-full h-full border-0"
+                                title="Print Preview"
+                            />
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsPrintPreviewOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={() => {
+                            if (printPreviewUrl) {
+                                const link = document.createElement('a');
+                                link.href = printPreviewUrl;
+                                link.download = previewFileName || 'document.pdf';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        }}>
+                            <Printer className="mr-2 h-4 w-4" />
+                            {t('common.print')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

@@ -24,7 +24,8 @@ import {
     CheckCircle,
     AlertTriangle,
     FileUp,
-    X
+    X,
+    Camera
 } from 'lucide-react'
 import {
     Dialog,
@@ -95,6 +96,7 @@ export default function UsersPage() {
     })
     const [importing, setImporting] = useState(false)
     const [duplicateRows, setDuplicateRows] = useState<{ row: number; email: string }[]>([])
+    const [uploadingImage, setUploadingImage] = useState(false)
 
     // Form states for Add User
     const [addForm, setAddForm] = useState<CreateUserInput>({
@@ -104,7 +106,8 @@ export default function UsersPage() {
         role: 'peminjam',
         noTelepon: '',
         alamat: '',
-        status: 'aktif'
+        status: 'aktif',
+        image: ''
     })
 
     // Form states for Edit User
@@ -164,8 +167,49 @@ export default function UsersPage() {
             role: 'peminjam',
             noTelepon: '',
             alamat: '',
-            status: 'aktif'
+            status: 'aktif',
+            image: ''
         })
+    }
+
+    // Handle image upload
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean = false) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        // Validate max size (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error('Ukuran file maksimal 2MB')
+            return
+        }
+
+        setUploadingImage(true)
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('folder', 'profiles')
+
+        try {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            const result = await response.json()
+
+            if (result.success) {
+                if (isEdit) {
+                    setEditForm(prev => ({ ...prev, image: result.data.url }))
+                } else {
+                    setAddForm(prev => ({ ...prev, image: result.data.url }))
+                }
+                toast.success('Foto profil berhasil diupload')
+            } else {
+                toast.error(result.error || 'Gagal mengupload gambar')
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan saat upload')
+        } finally {
+            setUploadingImage(false)
+        }
     }
 
     // Handle add user submit
@@ -192,7 +236,8 @@ export default function UsersPage() {
             role: user.role,
             noTelepon: user.noTelepon || '',
             alamat: user.alamat || '',
-            status: user.status
+            status: user.status,
+            image: user.image || ''
         })
     }
 
@@ -615,6 +660,46 @@ export default function UsersPage() {
                                     </DialogDescription>
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
+                                    {/* Profile Picture Upload */}
+                                    <div className="flex flex-col sm:flex-row items-center gap-6 justify-center">
+                                        <div className="relative group">
+                                            <Avatar className="h-24 w-24 border-4 border-white dark:border-slate-800 shadow-lg">
+                                                <AvatarImage src={addForm.image || undefined} className="object-cover" />
+                                                <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
+                                                    {addForm.nama?.substring(0, 2).toUpperCase() || 'US'}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <label
+                                                htmlFor="add-image-upload"
+                                                className="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full shadow-lg cursor-pointer hover:bg-primary/90 transition-all border-2 border-white dark:border-slate-800"
+                                            >
+                                                {uploadingImage ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Camera className="h-4 w-4" />
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    id="add-image-upload"
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleImageUpload(e, false)}
+                                                    disabled={uploadingImage}
+                                                />
+                                            </label>
+                                            {addForm.image && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setAddForm(prev => ({ ...prev, image: '' }))
+                                                    }}
+                                                    className="absolute bottom-0 left-0 p-1.5 bg-red-500 text-white rounded-full shadow-lg cursor-pointer hover:bg-red-600 transition-all border-2 border-white dark:border-slate-800"
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="add-name">{t('users.name')}</Label>
                                         <Input
@@ -959,6 +1044,46 @@ export default function UsersPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4 text-left">
+                        {/* Profile Picture Upload */}
+                        <div className="flex flex-col sm:flex-row items-center gap-6 justify-center">
+                            <div className="relative group">
+                                <Avatar className="h-24 w-24 border-4 border-white dark:border-slate-800 shadow-lg">
+                                    <AvatarImage src={editForm.image || undefined} className="object-cover" />
+                                    <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
+                                        {editForm.nama?.substring(0, 2).toUpperCase() || 'US'}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <label
+                                    htmlFor="edit-image-upload"
+                                    className="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full shadow-lg cursor-pointer hover:bg-primary/90 transition-all border-2 border-white dark:border-slate-800"
+                                >
+                                    {uploadingImage ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Camera className="h-4 w-4" />
+                                    )}
+                                    <input
+                                        type="file"
+                                        id="edit-image-upload"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, true)}
+                                        disabled={uploadingImage}
+                                    />
+                                </label>
+                                {editForm.image && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setEditForm(prev => ({ ...prev, image: '' }))
+                                        }}
+                                        className="absolute bottom-0 left-0 p-1.5 bg-red-500 text-white rounded-full shadow-lg cursor-pointer hover:bg-red-600 transition-all border-2 border-white dark:border-slate-800"
+                                    >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-name">{t('users.name')}</Label>
                             <Input
