@@ -27,11 +27,11 @@ async function main() {
     const admin = await prisma.user.create({
         data: {
             nama: 'Administrator',
-            email: 'admin@sekolah.id',
+            email: 'admin@gmail.com',
             password: hashedPassword,
             role: Role.admin,
             noTelepon: '081234567890',
-            alamat: 'SMK Negeri 1 Jenangan Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -39,11 +39,11 @@ async function main() {
     const petugas1 = await prisma.user.create({
         data: {
             nama: 'Ahmad Petugas',
-            email: 'ahmad@sekolah.id',
+            email: 'petugas1@gmail.com',
             password: hashedPassword,
             role: Role.petugas,
             noTelepon: '081234567891',
-            alamat: 'Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -51,11 +51,11 @@ async function main() {
     const petugas2 = await prisma.user.create({
         data: {
             nama: 'Siti Rahayu',
-            email: 'siti@sekolah.id',
+            email: 'petugas2@gmail.com',
             password: hashedPassword,
             role: Role.petugas,
             noTelepon: '081234567892',
-            alamat: 'Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -63,11 +63,11 @@ async function main() {
     const peminjam1 = await prisma.user.create({
         data: {
             nama: 'Budi Santoso',
-            email: 'budi@siswa.id',
+            email: 'peminjam1@gmail.com',
             password: hashedPassword,
             role: Role.peminjam,
             noTelepon: '081234567893',
-            alamat: 'Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -75,11 +75,11 @@ async function main() {
     const peminjam2 = await prisma.user.create({
         data: {
             nama: 'Citra Dewi',
-            email: 'citra@siswa.id',
+            email: 'peminjam2@gmail.com',
             password: hashedPassword,
             role: Role.peminjam,
             noTelepon: '081234567894',
-            alamat: 'Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -87,11 +87,11 @@ async function main() {
     const peminjam3 = await prisma.user.create({
         data: {
             nama: 'Dewi Anggraini',
-            email: 'dewi@siswa.id',
+            email: 'peminjam3@gmail.com',
             password: hashedPassword,
             role: Role.peminjam,
             noTelepon: '081234567895',
-            alamat: 'Ponorogo',
+            alamat: '',
             status: UserStatus.aktif,
         },
     })
@@ -300,9 +300,9 @@ async function main() {
     console.log(`   - Activity Logs: ${await prisma.logAktivitas.count()}`)
     console.log('')
     console.log('🔐 Default credentials:')
-    console.log('   Admin    : admin@sekolah.id / password123')
-    console.log('   Petugas  : ahmad@sekolah.id / password123')
-    console.log('   Peminjam : budi@siswa.id / password123')
+    console.log('   Admin    : admin@gmail.com / password123')
+    console.log('   Petugas  : petugas1@gmail.com / password123')
+    console.log('   Peminjam : peminjam1@gmail.com / password123')
 }
 
 main()

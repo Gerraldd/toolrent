@@ -1,8 +1,72 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Instalasi Project
 
-First, run the development server:
+Ikuti langkah-langkah berikut untuk menjalankan project ini di komputer lokal Anda.
+
+### 1. Persiapan Awal (Prerequisites)
+
+Pastikan Anda telah menginstal:
+- Node.js (versi 18 atau terbaru)
+- PostgreSQL (database)
+- Git
+
+### 2. Instalasi Dependensi
+
+Clone repository dan install dependensi yang dibutuhkan:
+
+```bash
+# Install dependencies
+npm install
+# atau
+yarn install
+# atau
+pnpm install
+# atau
+bun install
+```
+
+### 3. Konfigurasi Database
+
+1. Buat file `.env` dengan menyalin dari `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
+2. Sesuaikan `DATABASE_URL` di dalam file `.env` dengan konfigurasi PostgreSQL Anda.
+
+### 4. Migrasi Database & Seeding
+
+Jalankan perintah berikut untuk membuat tabel dan mengisi data awal (termasuk akun admin):
+
+```bash
+# Generate Prisma Client
+npm run db:generate
+
+# Push schema ke database (untuk development)
+npm run db:push
+
+# Atau gunakan migrate untuk production/staging
+# npm run db:migrate
+
+# Seeding data awal (Admin, Petugas, User, Kategori, Alat)
+npm run db:seed
+```
+
+### 5. Akun Administrator (Default)
+
+Setelah menjalankan `npm run db:seed`, Anda dapat login menggunakan akun berikut:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | `admin@gmail.com` | `password123` |
+| **Petugas** | `petugas1@gmail.com` | `password123` |
+| **Peminjam** | `peminjam1@gmail.com` | `password123` |
+
+> **Catatan:** Sebaiknya ubah password default setelah login pertama kali untuk keamanan.
+
+## Menjalankan Aplikasi
+
+Jalankan development server:
 
 ```bash
 npm run dev
