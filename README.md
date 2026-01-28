@@ -28,11 +28,15 @@ bun install
 
 ### 3. Konfigurasi Database
 
-1. Buat file `.env` dengan menyalin dari `.env.example`:
+1. Buat database baru di PostgreSQL (misalnya: `peminjaman_alat`).
+2. Buat file `.env` dengan menyalin dari `.env.example`:
    ```bash
    cp .env.example .env
    ```
-2. Sesuaikan `DATABASE_URL` di dalam file `.env` dengan konfigurasi PostgreSQL Anda.
+3. Sesuaikan `DATABASE_URL` di dalam file `.env`. Pastikan nama database di URL sesuai dengan yang Anda buat (contoh: `peminjaman_alat`).
+   ```env
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/peminjaman_alat?schema=public"
+   ```
 
 ### 4. Migrasi Database & Seeding
 
