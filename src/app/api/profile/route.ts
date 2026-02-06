@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth } from '@/lib/auth-api'
 import { getIpAddress } from '@/lib/utils'
 
@@ -15,6 +15,9 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
+
 
         const userId = parseInt(auth.user.id)
 

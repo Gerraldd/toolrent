@@ -33,10 +33,32 @@ bun install
    ```bash
    cp .env.example .env
    ```
-3. Sesuaikan `DATABASE_URL` di dalam file `.env`. Pastikan nama database di URL sesuai dengan yang Anda buat (contoh: `peminjaman_alat`).
+3. Sesuaikan variabel di dalam file `.env`:
+
    ```env
+   # Koneksi Database Utama
    DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/peminjaman_alat?schema=public"
+   
+   # NextAuth Configuration
+   NEXTAUTH_SECRET="buat-secret-random-panjang"
+   NEXTAUTH_URL="http://localhost:3000"
+   
+   # Database Manager Configuration
+   DB_MASTER_PASSWORD="master123"     # Master password untuk backup/restore/switch database
+   
+   # PostgreSQL Server Connection (untuk fitur Database Manager)
+   POSTGRES_HOST="localhost"
+   POSTGRES_PORT="5432"
+   POSTGRES_USER="postgres"
+   POSTGRES_PASSWORD="postgres"
+   
+   # Aktifkan fitur multi-database (true = tampilkan database selector di login)
+   DB_LIST="true"
    ```
+
+   > **Catatan:** 
+   > - `DB_MASTER_PASSWORD` digunakan untuk mengamankan operasi database (backup, restore, ganti database)
+   > - Set `DB_LIST="false"` jika tidak ingin menggunakan fitur multi-database
 
 ### 4. Migrasi Database & Seeding
 
@@ -67,6 +89,30 @@ Setelah menjalankan `npm run db:seed`, Anda dapat login menggunakan akun berikut
 | **Peminjam** | `peminjam1@gmail.com` | `password123` |
 
 > **Catatan:** Sebaiknya ubah password default setelah login pertama kali untuk keamanan.
+
+## Database Manager
+
+Fitur Database Manager memungkinkan Anda mengelola multiple database dalam satu instalasi aplikasi.
+
+### Akses Database Manager
+
+- Akses melalui halaman login, klik tombol **"Database Manager"** di pojok kanan atas
+- Atau langsung akses URL: `http://localhost:3000/db-manager`
+- Masukkan **Master Password** yang sudah dikonfigurasi di `.env` (`DB_MASTER_PASSWORD`)
+
+### Fitur yang Tersedia
+
+| Fitur | Deskripsi |
+|-------|-----------|
+| **Create Database** | Membuat database baru dengan admin account |
+| **Backup Database** | Download backup database dalam format `.sql` |
+| **Restore Database** | Restore database dari file backup `.sql` |
+| **Duplicate Database** | Duplikasi database yang ada ke database baru |
+| **Delete Database** | Hapus database yang tidak diperlukan |
+| **Switch Database** | Ganti database aktif (memerlukan master password) |
+| **Set Master Password** | Ubah master password untuk keamanan |
+
+> **Keamanan:** Semua operasi database memerlukan verifikasi **Master Password** untuk mencegah akses tidak sah.
 
 ## Menjalankan Aplikasi
 

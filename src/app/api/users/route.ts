@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth, hasRole } from '@/lib/auth-api'
 import { getIpAddress } from '@/lib/utils'
 
@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
                 { status: 403 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const { searchParams } = new URL(request.url)
         const page = parseInt(searchParams.get('page') || '1')
@@ -110,6 +112,8 @@ export async function POST(request: NextRequest) {
                 { status: 403 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const body = await request.json()
         const { nama, email, password, role, noTelepon, alamat, status, image } = body

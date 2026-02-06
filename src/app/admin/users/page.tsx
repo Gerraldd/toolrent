@@ -55,10 +55,12 @@ import { User, CreateUserInput, UpdateUserInput } from '@/lib/api-client'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/language-context'
 import { Counter } from '@/components/ui/counter'
+import { useSession } from 'next-auth/react'
 import * as XLSX from 'xlsx'
 
 export default function UsersPage() {
     const { t } = useLanguage()
+    const { data: session, update: updateSession } = useSession()
     // State for search and filters
     const [searchValue, setSearchValue] = useState('')
     const [roleFilter, setRoleFilter] = useState('')
@@ -131,9 +133,14 @@ export default function UsersPage() {
         refetch()
     })
 
-    const { updateUser, loading: updating } = useUpdateUser(() => {
+    const { updateUser, loading: updating } = useUpdateUser(async (updatedUserId?: number) => {
         setEditingUser(null)
         refetch()
+
+        // If the updated user is the current logged-in user, refresh session to update header
+        if (session?.user && updatedUserId && parseInt(session.user.id) === updatedUserId) {
+            await updateSession()
+        }
     })
 
     const { deleteUser, loading: deleting } = useDeleteUser(() => {

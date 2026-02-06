@@ -22,6 +22,17 @@ export async function middleware(request: NextRequest) {
 
     // Public routes that don't require authentication
     const publicRoutes = ['/login', '/']
+
+    // Handle /db-manager route - only accessible when DB_LIST is enabled
+    if (pathname === '/db-manager') {
+        const dbListEnabled = process.env.DB_LIST === 'true'
+        if (!dbListEnabled) {
+            // Redirect to login if DB_LIST is disabled
+            return NextResponse.redirect(new URL('/login', request.url))
+        }
+        return NextResponse.next()
+    }
+
     if (publicRoutes.includes(pathname)) {
         // If already logged in, redirect to appropriate dashboard
         if (token) {

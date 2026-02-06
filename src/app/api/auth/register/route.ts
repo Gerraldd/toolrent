@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 // POST /api/auth/register - Register new user (public endpoint for initial setup)
 export async function POST(request: NextRequest) {

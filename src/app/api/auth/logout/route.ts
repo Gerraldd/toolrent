@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth } from '@/lib/auth-api'
 import { getIpAddress } from '@/lib/utils'
 
@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
                 error: auth.error || 'Unauthorized - No valid token provided'
             }, { status: 401 })
         }
+
+        const prisma = await getPrisma()
 
         const userId = parseInt(auth.user.id)
 

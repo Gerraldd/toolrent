@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth, hasRole } from '@/lib/auth-api'
 import { subDays, startOfDay, endOfDay, format, differenceInDays, eachDayOfInterval, isSameDay, startOfMonth, endOfMonth } from 'date-fns'
 
@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
                 { status: 403 }
             )
         }
+
+        const prisma = await getPrisma()
 
         // Parse date range from query params
         const { searchParams } = new URL(request.url)

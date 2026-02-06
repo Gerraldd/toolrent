@@ -155,7 +155,7 @@ export function useCreateUser(onSuccess?: () => void): UseCreateUserResult {
 /**
  * Hook to update a user
  */
-export function useUpdateUser(onSuccess?: () => void): UseUpdateUserResult {
+export function useUpdateUser(onSuccess?: (updatedUserId?: number) => void): UseUpdateUserResult {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -168,7 +168,7 @@ export function useUpdateUser(onSuccess?: () => void): UseUpdateUserResult {
 
             if (response.success && response.data) {
                 toast.success(response.message || 'User berhasil diupdate')
-                onSuccess?.()
+                onSuccess?.(id)
                 return response.data
             }
 

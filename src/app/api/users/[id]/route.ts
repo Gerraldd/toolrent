@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth, hasRole } from '@/lib/auth-api'
 import { getIpAddress } from '@/lib/utils'
 
@@ -19,6 +19,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         if (!hasRole(auth.user, 'admin')) {
             return NextResponse.json(
@@ -83,6 +85,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         if (!hasRole(auth.user, 'admin')) {
             return NextResponse.json(
@@ -203,6 +207,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         if (!hasRole(auth.user, 'admin')) {
             return NextResponse.json(

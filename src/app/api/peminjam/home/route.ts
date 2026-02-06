@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         // Parallel fetch for homepage data
         const [activeLoanCount, categories, featuredTools] = await Promise.all([

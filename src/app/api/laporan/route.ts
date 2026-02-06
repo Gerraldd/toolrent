@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth } from '@/lib/auth-api'
 import { generatePeminjamanPDF, generatePengembalianPDF, generateDendaPDF } from '@/lib/pdf-generator'
 import { generatePeminjamanExcel, generatePengembalianExcel, generateDendaExcel } from '@/lib/excel-generator'
@@ -15,6 +15,8 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         // Only admin and petugas can access reports
         if (!['admin', 'petugas'].includes(auth.user.role)) {

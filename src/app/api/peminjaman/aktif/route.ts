@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth, hasRole } from '@/lib/auth-api'
 
 // GET /api/peminjaman/aktif - Get active loans (for return dropdown)
@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         if (!hasRole(auth.user, ['admin', 'petugas'])) {
             return NextResponse.json(

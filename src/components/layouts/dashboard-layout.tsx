@@ -426,9 +426,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                                                 </Link>
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
-                                            <DropdownMenuLabel>{t('settings.theme')}</DropdownMenuLabel>
+                                            {/* <DropdownMenuLabel>{t('settings.theme')}</DropdownMenuLabel> */}
 
-                                            <div className="px-2 pb-2">
+                                            <div className="px-2 py-2 pb-2">
                                                 <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 relative">
                                                     {[
                                                         { value: 'light', icon: Sun, label: t('settings.theme.light') },
@@ -452,7 +452,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                                                             {theme === item.value && (
                                                                 <motion.div
                                                                     layoutId="theme-active"
-                                                                    className="absolute inset-0 bg-white dark:bg-slate-700 rounded-md shadow-sm border border-slate-200/50 dark:border-slate-600"
+                                                                    className="absolute inset-0 bg-white dark:bg-slate-700 rounded-2xl shadow-sm border border-slate-200/50 dark:border-slate-600"
                                                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                                                     style={{ zIndex: -1 }}
                                                                 />

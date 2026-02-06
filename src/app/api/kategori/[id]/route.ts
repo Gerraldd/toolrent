@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
 import { getIpAddress } from '@/lib/utils'
 
@@ -19,6 +19,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const { id } = await params
         const kategoriId = parseInt(id)
@@ -70,6 +72,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const { id } = await params
         const kategoriId = parseInt(id)
@@ -156,6 +160,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const { id } = await params
         const kategoriId = parseInt(id)

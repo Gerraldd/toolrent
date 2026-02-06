@@ -1,11 +1,23 @@
 import { type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/prisma'
+import { getPrismaClient } from '@/lib/prisma'
+import { cookies } from 'next/headers'
 
 // Token expiry configurations
 const ACCESS_TOKEN_EXPIRY = 15 * 60 // 15 minutes in seconds
 const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60 // 7 days in seconds
+
+// Helper to get prisma client with selected database
+async function getPrisma() {
+    try {
+        const cookieStore = await cookies()
+        const selectedDb = cookieStore.get('selected_database')?.value
+        return getPrismaClient(selectedDb)
+    } catch {
+        return getPrismaClient()
+    }
+}
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -20,6 +32,8 @@ export const authOptions: NextAuthOptions = {
                     if (!credentials?.email || !credentials?.password) {
                         throw new Error('Email dan password harus diisi')
                     }
+
+                    const prisma = await getPrisma()
 
                     const user = await prisma.user.findUnique({
                         where: { email: credentials.email },
@@ -100,6 +114,8 @@ export const authOptions: NextAuthOptions = {
                         issuedAt: now,
                     }
                 }
+
+                const prisma = await getPrisma()
 
                 // Handle session update trigger - fetch fresh data from DB
                 if (trigger === 'update') {

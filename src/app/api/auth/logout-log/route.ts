@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { verifyAuth } from '@/lib/auth-api'
 
 export async function POST(request: NextRequest) {
@@ -12,6 +12,8 @@ export async function POST(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         // Create logout log
         await prisma.logAktivitas.create({

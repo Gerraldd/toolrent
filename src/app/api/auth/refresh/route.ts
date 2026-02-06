@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import jwt from 'jsonwebtoken'
 
 // Token expiry configurations (in seconds)

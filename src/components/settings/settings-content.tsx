@@ -10,6 +10,7 @@ import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { DatabaseManagement } from './database-management'
 
 export function SettingsContent() {
     const { language, setLanguage, t } = useLanguage()
@@ -517,6 +518,11 @@ export function SettingsContent() {
                         </div>
                     </form>
                 </div>
+
+                {/* Database Management Section - Admin Only */}
+                {(session?.user as any)?.role === 'admin' && (
+                    <DatabaseManagement />
+                )}
             </div>
         </div>
     )

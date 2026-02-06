@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
 import { getIpAddress } from '@/lib/utils'
 
@@ -15,6 +15,8 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const { searchParams } = new URL(request.url)
         const search = searchParams.get('search') || ''
@@ -63,6 +65,8 @@ export async function POST(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const body = await request.json()
         const { nama, deskripsi } = body

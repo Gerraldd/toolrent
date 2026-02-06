@@ -50,6 +50,7 @@ const translations: Record<Language, Record<string, string>> = {
         'common.mainPage': 'Halaman Utama',
         'common.selected': 'data dipilih',
         'common.confirmDelete': 'Konfirmasi Hapus',
+        'common.verifying': 'Memverifikasi...',
 
         // Navigation
         'nav.dashboard': 'Dashboard',
@@ -671,8 +672,48 @@ const translations: Record<Language, Record<string, string>> = {
         'login.signingIn': 'Sedang Masuk...',
         // 'login.mobileBrand': 'Peminjaman Alat',
         'login.error.generic': 'Terjadi kesalahan saat login',
+        'login.selectDatabase': 'Pilih Database',
+        'login.manageDatabases': 'Kelola Database',
 
+        // Database Management
+        'database.title': 'Manajemen Database',
+        'database.description': 'Backup dan restore database sistem',
+        'database.backup': 'Backup Database',
+        'database.backupDesc': 'Unduh salinan database dalam format .sql',
+        'database.backupSuccess': 'Backup database berhasil diunduh',
+        'database.restore': 'Restore Database',
+        'database.restoreDesc': 'Pulihkan database dari file backup',
+        'database.restoreWarning': 'PERINGATAN: Proses ini akan menghapus semua data yang ada dan menggantinya dengan data dari file backup!',
+        'database.masterPassword': 'Master Password',
+        'database.masterPasswordPlaceholder': 'Masukkan master password',
+        'database.selectFile': 'Pilih File .sql',
+        'database.restoreConfirm': 'Restore Database',
+        'database.restoreSuccess': 'Database Berhasil Dipulihkan',
+        'database.restoreError': 'Gagal memulihkan database',
+        'database.wrongPassword': 'Master password salah',
+        'database.logoutCountdown': 'Akan logout dalam {seconds} detik...',
+        'database.logoutMessage': 'Sistem akan logout untuk memperbarui data',
+        'database.emptyDatabase': 'Database kosong! Silakan restore database terlebih dahulu.',
+        'database.emptyDatabaseAction': 'Restore Database',
+        'database.switchDatabase': 'Ganti Database',
+        'database.switchDatabaseDesc': 'Masukkan master password untuk mengganti ke database "{database}"',
+        'database.switchConfirm': 'Ganti Database',
+        'database.enterPassword': 'Masukkan master password',
+        'database.verifyError': 'Gagal memverifikasi password',
+        'database.switching': 'Mengganti Database...',
 
+        // Database Manager
+        'dbManager.title': 'Database Manager',
+        'dbManager.databases': 'Databases',
+        'dbManager.createDatabase': 'Create Database',
+        'dbManager.restoreDatabase': 'Restore Database',
+        'dbManager.setMasterPassword': 'Set Master Password',
+        'dbManager.backup': 'Backup',
+        'dbManager.duplicate': 'Duplicate',
+        'dbManager.delete': 'Delete',
+        'dbManager.selectDb': 'Klik untuk pilih database',
+        'dbManager.noDb': 'Tidak ada database',
+        'dbManager.loading': 'Memuat databases...',
 
     },
     en: {
@@ -714,6 +755,7 @@ const translations: Record<Language, Record<string, string>> = {
         'common.mainPage': 'Main Page',
         'common.selected': 'selected',
         'common.confirmDelete': 'Confirm Delete',
+        'common.verifying': 'Verifying...',
 
         // Navigation
         'nav.dashboard': 'Dashboard',
@@ -903,6 +945,8 @@ const translations: Record<Language, Record<string, string>> = {
         'login.signingIn': 'Signing in...',
         // 'login.mobileBrand': 'Tool Lending',
         'login.error.generic': 'An error occurred during login',
+        'login.selectDatabase': 'Select Database',
+        'login.manageDatabases': 'Manage Databases',
 
         // Returns Page
         'returns.title': 'Return Data',
@@ -1336,6 +1380,46 @@ const translations: Record<Language, Record<string, string>> = {
         'activityLog.detail.serverTime': 'Server Time',
         'activityLog.empty.title': 'No activity logs',
         'activityLog.empty.description': 'No activities recorded matching this filter.',
+
+        // Database Management
+        'database.title': 'Database Management',
+        'database.description': 'Backup and restore system database',
+        'database.backup': 'Backup Database',
+        'database.backupDesc': 'Download a copy of the database in .sql format',
+        'database.backupSuccess': 'Database backup downloaded successfully',
+        'database.restore': 'Restore Database',
+        'database.restoreDesc': 'Restore database from backup file',
+        'database.restoreWarning': 'WARNING: This process will delete all existing data and replace it with data from the backup file!',
+        'database.masterPassword': 'Master Password',
+        'database.masterPasswordPlaceholder': 'Enter master password',
+        'database.selectFile': 'Select .sql File',
+        'database.restoreConfirm': 'Restore Database',
+        'database.restoreSuccess': 'Database Restored Successfully',
+        'database.restoreError': 'Failed to restore database',
+        'database.wrongPassword': 'Wrong master password',
+        'database.logoutCountdown': 'Will logout in {seconds} seconds...',
+        'database.logoutMessage': 'System will logout to refresh data',
+        'database.emptyDatabase': 'Database is empty! Please restore database first.',
+        'database.emptyDatabaseAction': 'Restore Database',
+        'database.switchDatabase': 'Switch Database',
+        'database.switchDatabaseDesc': 'Enter master password to switch to database "{database}"',
+        'database.switchConfirm': 'Switch Database',
+        'database.enterPassword': 'Enter master password',
+        'database.verifyError': 'Failed to verify password',
+        'database.switching': 'Switching Database...',
+
+        // Database Manager
+        'dbManager.title': 'Database Manager',
+        'dbManager.databases': 'Databases',
+        'dbManager.createDatabase': 'Create Database',
+        'dbManager.restoreDatabase': 'Restore Database',
+        'dbManager.setMasterPassword': 'Set Master Password',
+        'dbManager.backup': 'Backup',
+        'dbManager.duplicate': 'Duplicate',
+        'dbManager.delete': 'Delete',
+        'dbManager.selectDb': 'Click to select database',
+        'dbManager.noDb': 'No databases found',
+        'dbManager.loading': 'Loading databases...',
     }
 }
 

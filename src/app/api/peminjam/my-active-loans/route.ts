@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 // GET /api/peminjam/my-active-loans - Get current user's active loans (for return form)
 export async function GET(request: NextRequest) {
@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
                 { status: 401 }
             )
         }
+
+        const prisma = await getPrisma()
 
         const userId = parseInt(session.user.id)
 
